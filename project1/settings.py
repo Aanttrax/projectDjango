@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -72,11 +73,25 @@ WSGI_APPLICATION = "project1.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+APP_NAME = config("APP_NAME")
+PORT = config("PORT", default=3200, cast=int)
+HOST = config("HOST", default="0.0.0.0")
+MONGO_USER = config("MONGO_USER")
+MONGO_PWD = config("MONGO_PWD")
+MONGO_HOST = config("MONGO_HOST")
+MONGO_DB_NAME = config("MONGO_DB_NAME")
+MONGO_OPTIONS = config("MONGO_OPTIONS")
+TOKEN_SECRET = config("TOKEN_SECRET")
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "djongo",
+        "NAME": MONGO_DB_NAME,
+        "ENFORCE_SCHEMA": False,
+        "CLIENT": {
+            "host": f"mongodb+srv://{MONGO_USER}:{MONGO_PWD}@{MONGO_HOST}/{MONGO_DB_NAME}{MONGO_OPTIONS}",
+            "tls": True,
+        },
     }
 }
 
