@@ -1,12 +1,13 @@
-import django_mongodb_backend
+from django_mongodb_backend.fields import ObjectIdAutoField, ObjectIdField
 from django.db import models
 
 
 class Task(models.Model):
-    _id = django_mongodb_backend.fields.ObjectIdAutoField(
-        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
-    )
+    _id = ObjectIdAutoField(primary_key=True)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     done = models.BooleanField(default=False)  # type: ignore
-    userId = django_mongodb_backend.fields.ObjectIdField()
+    userId = ObjectIdField()
+
+    class Meta:
+        db_table = "tasks"
