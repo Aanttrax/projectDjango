@@ -2,11 +2,18 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from decouple import config
 
 
 def main():
     """Run administrative tasks."""
+    APP_NAME = config("APP_NAME")
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project1.settings")
+    print(f"Running {APP_NAME}")
+    if len(sys.argv) == 2 and sys.argv[1] == "runserver":
+        PORT = config("PORT", default=3200, cast=int)
+        HOST = config("HOST", "127.0.0.1")
+        sys.argv.append(f"{HOST}:{PORT}")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

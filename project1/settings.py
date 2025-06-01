@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import django_mongodb_backend
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,9 +33,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
+#    "django.contrib.admin",
+#    "django.contrib.auth",
+#    "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
@@ -82,19 +83,11 @@ MONGO_HOST = config("MONGO_HOST")
 MONGO_DB_NAME = config("MONGO_DB_NAME")
 MONGO_OPTIONS = config("MONGO_OPTIONS")
 TOKEN_SECRET = config("TOKEN_SECRET")
+CONNECTION_URI = f"mongodb+srv://{MONGO_USER}:{MONGO_PWD}@{MONGO_HOST}/{MONGO_DB_NAME}{MONGO_OPTIONS}"
 
 DATABASES = {
-    "default": {
-        "ENGINE": "djongo",
-        "NAME": MONGO_DB_NAME,
-        "ENFORCE_SCHEMA": False,
-        "CLIENT": {
-            "host": f"mongodb+srv://{MONGO_USER}:{MONGO_PWD}@{MONGO_HOST}/{MONGO_DB_NAME}{MONGO_OPTIONS}",
-            "tls": True,
-        },
-    }
+    "default": django_mongodb_backend.parse_uri(CONNECTION_URI, db_name=MONGO_DB_NAME),
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
